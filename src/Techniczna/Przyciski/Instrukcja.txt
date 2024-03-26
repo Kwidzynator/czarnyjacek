@@ -1,0 +1,34 @@
+Cel gry:
+Celem gry Blackjack jest uzyskanie ręki kart o wartości jak najbliższej 21, nie przekraczając jej. Gracz rywalizuje z krupierem, starając się uzyskać lepszą rękę, ale bez przekroczenia wartości 21.
+
+Zasady:
+
+Wartości kart:
+
+Karty od 2 do 10 mają wartość odpowiadającą ich numerowi.
+Jopek (J) ma wartość 2.
+Królowa (Q) ma wartość 3.
+Król (K) ma wartość 4.
+As (A) ma wartość 11.
+Gracz rozpoczyna grę stawiając zakład.
+
+Każdy gracz oraz krupier otrzymuje dwie karty. Jedna karta krupiera jest odkryta, a druga zakryta.
+
+Gracz ma kilka możliwych ruchów:
+
+Hit: Poproszenie o kolejną kartę.
+Stand: Pozostanie przy obecnej ręce.
+Double Down: Podwojenie zakładu i otrzymanie tylko jednej kolejnej karty. (opcjonalnie)
+Surrender: Zrzeczenie się połowy zakładu, rezygnując z dalszej gry. (opcjonalnie)
+
+
+Wygrywa gracz, który:
+
+Ma rękę o wartości bliższej 21 niż krupier, ale nie przekraczającą 21.
+Ma rękę o wartości 21 (Blackjack), gdy krupier nie ma Blackjacka.
+Krupier przekracza 21 punktów, a gracz nie.
+W przypadku remisu (tzw. push), gracz odzyskuje swój zakład.
+
+Jeśli gracz ma Blackjacka, otrzymuje wypłatę 3:2 (czyli 1.5-krotność zakładu), chyba że krupier także ma Blackjacka, wtedy jest to remis.
+
+Jeśli gracz przekroczy 21 punktów (Bust), przegrywa swój zakład.
