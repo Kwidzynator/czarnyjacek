@@ -22,7 +22,7 @@ Double Down: Podwojenie zakładu i otrzymanie tylko jednej kolejnej karty. (opcj
 Surrender: Zrzeczenie się połowy zakładu, rezygnując z dalszej gry. (opcjonalnie)
 
 
-Wygrywa gracz, który:
+Gracz wygrywa w momencie gdy:
 
 Ma rękę o wartości bliższej 21 niż krupier, ale nie przekraczającą 21.
 Ma rękę o wartości 21 (Blackjack), gdy krupier nie ma Blackjacka.

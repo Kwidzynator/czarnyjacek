@@ -2,9 +2,9 @@ package gra;
 
 /** poniższy enum odpowiada za kolory dla naszych kart nadawane w celu możliwości przeprowadzenia gry*/
 public enum Kolory{
-    SERCE("Serce"),
+    KIER("Kier"),
     KARO("Karo"),
-    PICK("Pick"),
+    PIK("Pik"),
     TREFL("Trefl");
 
     /** tekstKolory poniżej są nam potrzebny

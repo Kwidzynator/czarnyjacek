@@ -1,17 +1,14 @@
 import Techniczna.Gui;
 
 
-public class Gra {
+public class Main {
     public static void main(String[] args) {
 
         Gui gui = new Gui();
         gui.okno();
 
-
-
-
         /*/gracz na start otrzymuje dwie karty w związku z czym powinniśmy wylosować najpierw liczbę z przedziału 1-4 a następnie z przedziału
-        //2 - 12
+        //1 - 12
         Random random = new Random();
         Karty k1, k2;
 
