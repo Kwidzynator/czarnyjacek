@@ -2,6 +2,9 @@ package org.gra;
 
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * raczej oczywiste gdzieś musimy nasze karty przechowywać
+ * */
 
 public class Talia {
 

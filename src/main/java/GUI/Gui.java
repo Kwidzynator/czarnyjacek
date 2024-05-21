@@ -16,6 +16,7 @@ public class Gui {
     protected JPanel menuTlo = new JPanel();
     protected JPanel menuPrzyciski = new JPanel();
     protected JPanel gra = new JPanel();
+    protected JButton przyciskZagraj;
     protected int czyWGrze = 0;
 
     /**kontruktor postawiony w ramach formalności, implementacje pod nim będą odpowiedzialne za nasze GUI*/
@@ -24,7 +25,7 @@ public class Gui {
     /**funkcja okno jest odpowiedzialna za ogólną deklarację naszego okna w niej będą wywoływane wszelkiego rodzaju
      * inne funkcje ozdabiające nasze gui*/
     public void okno(){
-
+        //tutaj nie stosujemy pliku UtworzenieOkna gdyż te okno jest na tyle różne od pozostałych że użycie tego zdaje się być bez sensu
         this.frame = new JFrame();
         this.frame.setSize(1820, 1820);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,8 +66,10 @@ public class Gui {
         this.menuPrzyciski.setBackground(new Color(0x333A3A));
 
         Instrukcja instrukcja = new Instrukcja(this.menuPrzyciski);
-        Zagraj zagraj = new Zagraj(this.menuPrzyciski);
-
+        this.przyciskZagraj = new JButton("Zagraj");
+        this.przyciskZagraj.setFocusable(false); // Usunięcie otoczki wokół napisu
+        Zagraj zagraj = new Zagraj(przyciskZagraj);
+        menuPrzyciski.add(przyciskZagraj);
         this.menu.add(menuPrzyciski);
     }
 

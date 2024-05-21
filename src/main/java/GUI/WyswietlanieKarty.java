@@ -1,14 +1,24 @@
 package GUI;
 
+import org.gra.Karty;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.Flow;
 
-public class WyswietlanieKarty extends Gui {
-
+/**
+ * jak sama nazwa wskazuje klasa odpowiedzialna za wyswietlenie naszych kart
+ * */
+public class WyswietlanieKarty{
+    ArrayList<String> sciezkiKart = new ArrayList<>();
     public JPanel panelSrodek = new JPanel();
     public JPanel panelKarty = new JPanel();
 
     public WyswietlanieKarty() {
+    }
+    private void nowePole(){
         panelSrodek.setLayout(new BorderLayout());
         panelSrodek.setPreferredSize(new Dimension(470, 360));
         panelSrodek.setOpaque(false);
@@ -16,26 +26,48 @@ public class WyswietlanieKarty extends Gui {
         panelKarty.setLayout(new FlowLayout(FlowLayout.CENTER));
         panelKarty.setPreferredSize(new Dimension(470, 360));
         panelKarty.setOpaque(false);
-    }
-
-    public JPanel startGry(String s1, String s2) {
-        ImageIcon karta1 = new ImageIcon(getClass().getResource(s1));
-        ImageIcon karta2 = new ImageIcon(getClass().getResource(s2));
-
-        JLabel karta1Label = new JLabel(karta1);
-        karta1Label.setOpaque(false);
-        karta1Label.setPreferredSize(new Dimension(260, 360));
-
-        JLabel karta2Label = new JLabel(karta2);
-        karta2Label.setOpaque(false);
-        karta2Label.setPreferredSize(new Dimension(260, 360));
-
-        panelKarty.add(karta1Label);
-        panelKarty.add(karta2Label);
 
         panelSrodek.add(panelKarty, BorderLayout.SOUTH);
         panelSrodek.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
+    }
+    public JPanel startGry(String s1, String s2) {
+        nowePole();
+
+        dodanieKarty(s1);
+        dodanieKarty(s2);
 
         return panelSrodek;
+    }
+
+    public void dodanieKarty(String s) {
+        sciezkiKart.add(s);
+        ImageIcon oryginalnaKarta = new ImageIcon(Objects.requireNonNull(getClass().getResource(s)));
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
+
+        JLabel nowaKartaLabel = getjLabel(screenWidth, screenHeight, oryginalnaKarta);
+
+        panelKarty.add(nowaKartaLabel);
+        panelKarty.revalidate();
+        panelKarty.repaint();
+    }
+
+    /** karty skalujące się z rozmiarem monitora*/
+    private JLabel getjLabel(int screenWidth, int screenHeight, ImageIcon oryginalnaKarta) {
+        int cardWidth = screenWidth / 9;
+        int cardHeight = screenHeight / 4;
+
+        // Skalowanie obrazu karty
+        Image oryginalnyObraz = oryginalnaKarta.getImage();
+        Image skalowanyObraz = oryginalnyObraz.getScaledInstance(cardWidth, cardHeight, Image.SCALE_SMOOTH);
+        ImageIcon nowaKarta = new ImageIcon(skalowanyObraz);
+
+        JLabel nowaKartaLabel = new JLabel(nowaKarta);
+        nowaKartaLabel.setOpaque(false);
+        nowaKartaLabel.setPreferredSize(new Dimension(cardWidth, cardHeight));
+        return nowaKartaLabel;
     }
 }

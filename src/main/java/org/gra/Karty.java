@@ -1,5 +1,7 @@
 package org.gra;
 
+import java.util.Objects;
+
 /**klasa odpowiedzialna za połączenie koloru oraz wartosci karty*/
 public class Karty {
 
@@ -8,12 +10,12 @@ public class Karty {
     private final Wartosci wartosci;
 
     /**dosyc oczywiste, sprawdza czy karta jest w ręce gracza*/
-    private final boolean czyWRece;
+
 
     public Karty(Kolory kolory, Wartosci wartosci){
         this.kolory = kolory;
         this.wartosci = wartosci;
-        czyWRece = true;
+
     }
 
     public String uzyskajKolor(){
@@ -26,14 +28,22 @@ public class Karty {
 
     public int uzyskajWartosc() { return wartosci.printLiczbaWartosci(); }
 
+
+    /** poniższa część kodu odpowiada za właściwe przyrównania czy karty są sobie równe
+     * zwyczajne porównanie equals nie zadziała gdyż Java korzysta z porównań referencji
+     * a nie wartości przez co musimy każdej karcie przypisać wartość hasz
+     * */
     @Override
-    public String toString() {
-        String str = "";
-
-        if(czyWRece) {
-             str += "Kolor: " + kolory.printKolory() + " wartosc: " + wartosci.printNazwy() + "\n";
-        }
-
-        return str;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Karty karty = (Karty) o;
+        return kolory == karty.kolory && wartosci == karty.wartosci;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kolory, wartosci);
+    }
+
 }

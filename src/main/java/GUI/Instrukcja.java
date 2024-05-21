@@ -21,6 +21,7 @@ public class Instrukcja extends Gui implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == przyciskInstrukcji){
+            //tutaj lekkie odejście od mvc ale nie ma sensu tworzyć dwóch plików dla drobnego okna
                 UtworzenieOkna utworzenieOkna = new UtworzenieOkna();
                 JFrame oknoInstrukcji = utworzenieOkna.okno();
 
@@ -33,13 +34,14 @@ public class Instrukcja extends Gui implements ActionListener {
                         "<br> Gracz rywalizuje z krupierem, starając się uzyskać lepszą rękę, ale bez przekroczenia wartości 21. </ul> <br>" +
                         "<font color = 'red'> Wartości kart: </font> <br>" +
                         "<ul>Karty od 2 do 10 mają wartość odpowiadającą ich numerowi.<br>" +
-                        "Jopek (J) ma wartość 2.<br>" +
-                        "Królowa (Q) ma wartość 3.<br>" +
-                        "Król (K) ma wartość 4.<br>" +
-                        "As (A) ma wartość 11.</ul><br>" +
+                        "Walet (J) ma wartość 10.<br>" +
+                        "Królowa (Q) ma wartość 10.<br>" +
+                        "Król (K) ma wartość 10.<br>" +
+                        "As (A) ma wartość 11 lub 1 w zależności od ręki.</ul><br>" +
                         "<font color = 'red'> Ogólne zasady: </font><br>" +
                         "<ul>Gracz rozpoczyna grę stawiając zakład.<br>" +
-                        "Każdy gracz oraz krupier otrzymuje dwie karty. Jedna karta krupiera jest odkryta, a druga zakryta.</ul><br>" +
+                        "Każdy gracz oraz krupier otrzymuje dwie karty. Jedna karta krupiera jest odkryta, a druga zakryta.<br>" +
+                        "Maksymalna ilość kart w ręce to 11 (matematyka).</ul><br>" +
                         "<font color = 'red'> Gracz ma kilka możliwych ruchów: </font> <br>" +
                         "<ul> Hit: Poproszenie o kolejną kartę.<br>" +
                         "Stand: Pozostanie przy obecnej ręce.<br>" +
