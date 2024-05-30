@@ -32,11 +32,15 @@ public class PrzyciskiGry implements ActionListener {
     private Socket socket;
     private BufferedWriter bw;
     private BufferedReader br;
+
     private boolean czyStand = false;
+    private OknoGry OG;
     private boolean czyDD = false;
 
     public PrzyciskiGry(JButton hit, JButton stand, JButton doubleDown, JButton surrender,
-                        Gra gra, WyswietlanieKarty wyswietlanieKarty, JFrame oknogry, int postawione, int srodki, Socket socket) throws IOException {
+                        Gra gra, WyswietlanieKarty wyswietlanieKarty, JFrame oknogry, int postawione, int srodki,
+                        Socket socket, OknoGry OG) throws IOException {
+
         this.srodki = srodki;
         this.postawione = postawione;
         this.gra = gra;
@@ -49,6 +53,8 @@ public class PrzyciskiGry implements ActionListener {
         this.socket = socket;
         this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        this.OG = OG;
         hit.addActionListener(this);
         stand.addActionListener(this);
         doubleDown.addActionListener(this);
@@ -89,6 +95,7 @@ public class PrzyciskiGry implements ActionListener {
                 wyslanieKarty(karta);
                 gra.pktKlienta += karta.uzyskajWartosc();
                 System.out.println(gra.pktKlienta);
+
                 wyswietlanieKarty.dodanieKarty(sciezkaDodana);
             }
             else{
@@ -105,7 +112,6 @@ public class PrzyciskiGry implements ActionListener {
         bw.write("stand");
         bw.newLine();
         bw.flush();
-
         wynik();
     }
 
@@ -148,10 +154,12 @@ public class PrzyciskiGry implements ActionListener {
         bw.newLine();
         bw.flush();
 
+        bw.close();
+        socket.close();
         oknogry.dispose();
     }
 
-    public void wyslanieKarty(Karty karta) throws IOException {
+    private void wyslanieKarty(Karty karta) throws IOException {
         JSONArray jsonA = new JSONArray();
 
         JSONObject card = new JSONObject();
@@ -165,28 +173,32 @@ public class PrzyciskiGry implements ActionListener {
         bw.flush();
     }
 
-    private void wynik(){
+    private void wynik() throws IOException {
         if(gra.pktSerwera < gra.pktKlienta && gra.pktKlienta < 22){
-            JOptionPane.showMessageDialog(oknogry, "Wygrywasz!", "wygrana", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(oknogry, "Wygrywasz!", "wygrana", JOptionPane.PLAIN_MESSAGE);
             srodki += postawione;
         }
         else if((gra.pktSerwera == gra.pktKlienta && gra.pktKlienta < 22) || (gra.pktSerwera > 21 && gra.pktKlienta > 21)){
-            JOptionPane.showMessageDialog(oknogry, "Remis :/", "remis", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(oknogry, "Remis :/", "remis", JOptionPane.PLAIN_MESSAGE);
         }
         else if(gra.pktKlienta > 21){
             JOptionPane.showMessageDialog(oknogry, "Porażka :cc", "porażka", JOptionPane.WARNING_MESSAGE);
             srodki -= postawione;
         }
+        oknogry.dispose();
+        wyswietlanieKarty.panelKarty.removeAll();
+        wyswietlanieKarty.panelKarty.revalidate();
+        wyswietlanieKarty.panelKarty.repaint();
+        wyswietlanieKarty.sciezkiKart.clear();
+
+        bw.write("reset");
+        bw.newLine();
+        bw.flush();
+
+        OG.reset();
         Oknozakladu oknozakladu = new Oknozakladu();
         oknozakladu.zaklad(srodki, socket);
     }
 
-    public void resztaGry() throws IOException {
-        String wiadomosc = br.readLine();
-        if(wiadomosc.equals("stand")){
-            czyStand = true;
-        } else{
 
-        }
-    }
 }

@@ -27,20 +27,24 @@ public class PrzyciskZakladu implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == button){
-            try {
-                int postawione = Integer.parseInt(textField.getText());
-                if(postawione > this.srodki){
-                    JOptionPane.showMessageDialog(oknozakladu, "my tutaj nie zezwalamy na kredyty :)", "Bład", JOptionPane.ERROR_MESSAGE);
-                    textField.setText("");
-                }
-                else {
-                    OknoGry oknoGry = new OknoGry(postawione, srodki, socket);
-                    oknoGry.poZakladzie();
-                    oknozakladu.dispose();
-                }
-            } catch(NumberFormatException | IOException ex){
-                JOptionPane.showMessageDialog(oknozakladu, "podaj LICZBE", "Bład", JOptionPane.ERROR_MESSAGE);
+            int postawione = Integer.parseInt(textField.getText());
+            if(postawione > this.srodki){
+                JOptionPane.showMessageDialog(oknozakladu, "my tutaj nie zezwalamy na kredyty :)", "Bład", JOptionPane.ERROR_MESSAGE);
                 textField.setText("");
+            }
+            else {
+                OknoGry oknoGry = null;
+                try {
+                    oknoGry = new OknoGry(postawione, srodki, socket);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                try {
+                    oknoGry.poZakladzie();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                oknozakladu.dispose();
             }
 
         }

@@ -29,11 +29,13 @@ public class OknoGry{
     protected final JButton doubleDown = new JButton("double down");
     protected final JButton surrender = new JButton("surrender");
     protected JPanel panelKart;
+    private JPanel panelSerwer;
     private WyswietlanieKarty wyswietlanieKarty;
 
     private Talia talia;
     private Socket socket;
     private final BufferedReader br;
+    private final BufferedWriter bw;
     private final Gra gra = new Gra();
 
     private PrzyciskiGry przyciskiGry;
@@ -43,8 +45,9 @@ public class OknoGry{
         this.srodki = srodki;
         this.socket = socket;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+        bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
+
 
     /**
      * WAŻNE bo tutaj mamy troche skakania po klasach, chcemy abyśmy MUSIELI najpierw postawić zakład, a potem grać w związku z czym:
@@ -61,14 +64,15 @@ public class OknoGry{
         UtworzenieOkna utworzenieOkna = new UtworzenieOkna();
         JFrame oknogry = utworzenieOkna.okno();
 
-        przyciskiGry = new PrzyciskiGry(hit, stand, doubleDown, surrender, gra,
-                wyswietlanieKarty, oknogry, postawione, srodki, socket);
+        kartyStartoweSerwera();
 
         kartyStartowe();
-        kartyStartoweSerwera();
+
 
         przyciski();
 
+        przyciskiGry = new PrzyciskiGry(hit, stand, doubleDown, surrender, gra,
+                wyswietlanieKarty, oknogry, postawione, srodki, socket, this);
 
         ustawieniePrzyciskow();
 
@@ -101,6 +105,7 @@ public class OknoGry{
 
     private void kartyStartoweSerwera() throws IOException {
         String przeslane = br.readLine();
+        System.out.println("Received JSON string: " + przeslane);
         JSONArray jsonArray = new JSONArray(przeslane);
         wyswietlanieKarty = new WyswietlanieKarty();
         String link1 = null;
@@ -111,11 +116,11 @@ public class OknoGry{
 
             if(i != 0) {
                 link2 = jsonObject.getString("link");
-                //System.out.println(link2);
+                System.out.println(link2);
             }
             else{
                 link1 = "/karty/tylKarty.png";
-                //System.out.println(link1);
+                System.out.println(link1);
             }
 
             String nazwa = jsonObject.getString("nazwa");
@@ -123,9 +128,9 @@ public class OknoGry{
             int wartosc = jsonObject.getInt("wartosc");
 
 
-            //System.out.println(nazwa);
-            //System.out.println(kolor);
-            //System.out.println(wartosc);
+            System.out.println(nazwa);
+            System.out.println(kolor);
+            System.out.println(wartosc);
             gra.pktSerwera += wartosc;
             //dodajemy kartę do talii aby się nie powatarzała
             Kolory kartaKolor = Kolory.fromString(kolor);
@@ -135,9 +140,10 @@ public class OknoGry{
 
 
         }
+
         System.out.println("pkt serwera: " + gra.getPktSerwera());
         wyswietlanieKarty = new WyswietlanieKarty();
-        JPanel panelSerwera = wyswietlanieKarty.startGry(link1, link2, 1);
+        panelSerwer = wyswietlanieKarty.startGry(link1, link2, 1);
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.anchor |= GridBagConstraints.NORTH;
@@ -147,7 +153,7 @@ public class OknoGry{
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
 
-        calosc.add(panelSerwera, gbc);
+        calosc.add(panelSerwer, gbc);
     }
 
     private void kartyStartowe() throws IOException {
@@ -156,14 +162,14 @@ public class OknoGry{
         sciezkakarty2 = gra.uzyskanieLinka();
 
         talia = gra.getTaliaUzytych();
-        Karty karta = talia.get(0);
+        Karty karta = talia.get(talia.size() - 1);
         gra.pktKlienta += karta.uzyskajWartosc();
-        przyciskiGry.wyslanieKarty(karta);
+        wyslanieKarty(karta);
 
-        karta = talia.get(1);
+        karta = talia.get(talia.size() - 2);
         gra.pktKlienta += karta.uzyskajWartosc();
         System.out.println("pkt klienta: " + gra.getPktKlienta());
-        przyciskiGry.wyslanieKarty(karta);
+        wyslanieKarty(karta);
 
 
         wyswietlanieKarty = new WyswietlanieKarty();
@@ -209,4 +215,34 @@ public class OknoGry{
         lewogora.add(buttonPanel);
         przyciski.add(lewogora, BorderLayout.NORTH); // Dodajemy panel przycisków do kontenera, ustawiając go na górze
     }
+
+
+
+    private void wyslanieKarty(Karty karta) throws IOException {
+        JSONArray jsonA = new JSONArray();
+
+        JSONObject card = new JSONObject();
+        card.put("kolor", karta.uzyskajKolor());
+        card.put("wartosc", karta.uzyskajWartosc());
+        card.put("nazwa", karta.uzyskajNazwe());
+
+        jsonA.put(card);
+        bw.write(jsonA.toString());
+        bw.newLine();
+        bw.flush();
+    }
+
+    public void reset() throws IOException {
+
+        gra.oczysczenie();
+        panelKart.removeAll();
+        panelSerwer.removeAll();
+        przyciski.removeAll();
+        przyciski();
+        ustawieniePrzyciskow();
+        calosc.revalidate();
+        calosc.repaint();
+    }
+
+
 }
