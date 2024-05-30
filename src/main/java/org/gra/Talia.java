@@ -1,12 +1,13 @@
 package org.gra;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 /**
  * raczej oczywiste gdzieś musimy nasze karty przechowywać
  * */
 
-public class Talia {
+public class Talia implements Iterable<Karty>{
 
     public final List<Karty> kartyList;
 
@@ -36,5 +37,18 @@ public class Talia {
         kartyList.remove(karta);
         talia.dodaj(karta);
         return true;
+    }
+
+    public Karty get(int index) {
+        if (index >= 0 && index < kartyList.size()) {
+            return kartyList.get(index);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Iterator<Karty> iterator() {
+        return kartyList.iterator();
     }
 }

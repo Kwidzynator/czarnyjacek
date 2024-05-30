@@ -11,7 +11,7 @@ public class Gra {
 
     public int postawione = 0;
     public int srodki = 5000;
-    Talia talia = new Talia();
+    private Talia taliaUzytych = new Talia();
     /**
      * warto również zaznaczyć iż ze względu na wartość punktową środki i postawione
      * klasa ta będzie wiele razy przerzucana z pliku do pliku więc dzięki temu mamy taką kolejność
@@ -20,7 +20,8 @@ public class Gra {
      *          ->WyswietlanieKarty
      *          ->PrzyciskiGry->WyswietlanieKarty
      * */
-    public int iloscPkt = 0;
+    public int pktKlienta = 0;
+    public int pktSerwera = 0;
     public Karty losowanie(){
         Random random = new Random();
         Karty karta;
@@ -29,26 +30,33 @@ public class Gra {
         Kolory kartaKolor = Kolory.values()[kolor - 1];
         Wartosci kartaWartosc = Wartosci.values()[wartosc - 1];
         karta = new Karty(kartaKolor, kartaWartosc);
-        iloscPkt += karta.uzyskajWartosc();
+        pktKlienta += karta.uzyskajWartosc();
         return karta;
     }
-    public String dodanieDoTalii(){
+    public String uzyskanieLinka(){
         Karty karta = losowanie();
-        while(talia.kartyList.contains(karta)){
+        while(taliaUzytych.kartyList.contains(karta)){
             karta = losowanie();
         }
-        talia.dodaj(karta);
+        dodanie(karta);
         // Karty karta = new Karty(Kolory.KIER, Wartosci.JOPEK);
         UzyskanieGrafiki ug = new UzyskanieGrafiki();
         return ug.sciezka(karta);
     }
 
-    public int getIloscPkt() { return iloscPkt; }
+    public void dodanie(Karty karta){
+        taliaUzytych.dodaj(karta);
+    }
 
+    public int getPktKlienta() { return pktKlienta; }
+
+    public Talia getTaliaUzytych() {
+        return taliaUzytych;
+    }
 
     public Gra(){
-
     }
+
 
 
 

@@ -9,8 +9,6 @@ public class Karty {
     private final Kolory kolory;
     private final Wartosci wartosci;
 
-    /**dosyc oczywiste, sprawdza czy karta jest w ręce gracza*/
-
 
     public Karty(Kolory kolory, Wartosci wartosci){
         this.kolory = kolory;
@@ -46,4 +44,11 @@ public class Karty {
         return Objects.hash(kolory, wartosci);
     }
 
+    @Override
+    public String toString() {
+        return "Karty{" +
+                "kolory=" + kolory +
+                ", wartosci=" + wartosci +
+                '}';
+    }
 }

@@ -11,13 +11,13 @@ public class Gui {
     /**panelCont przechowuje nasze pozostałe panele,
      * panel menu - stan kiedy uruchamiamy program
      * panel gra - stan po kliknięciu przycisku zagraj (nasza gra)*/
-    protected JPanel panelCont = new JPanel();
+
     protected JPanel menu = new JPanel();
     protected JPanel menuTlo = new JPanel();
     protected JPanel menuPrzyciski = new JPanel();
     protected JPanel gra = new JPanel();
     protected JButton przyciskZagraj;
-    protected int czyWGrze = 0;
+
 
     /**kontruktor postawiony w ramach formalności, implementacje pod nim będą odpowiedzialne za nasze GUI*/
     public Gui(){};

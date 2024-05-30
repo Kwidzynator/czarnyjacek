@@ -3,7 +3,6 @@ package GUI;
 import org.gra.Gra;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,11 +18,15 @@ public class PrzyciskiGry implements ActionListener {
     private final JButton surrender;
     private final Gra gra;
     private final WyswietlanieKarty wyswietlanieKarty;
-    private JFrame oknogry;
+    private final JFrame oknogry;
+    private final int srodki;
+    private int postawione;
     boolean czyDD = false;
 
     public PrzyciskiGry(JButton hit, JButton stand, JButton doubleDown, JButton surrender,
-                        Gra gra, WyswietlanieKarty wyswietlanieKarty, JFrame oknogry) {
+                        Gra gra, WyswietlanieKarty wyswietlanieKarty, JFrame oknogry, int postawione, int srodki) {
+        this.srodki = srodki;
+        this.postawione = postawione;
         this.gra = gra;
         this.hit = hit;
         this.stand = stand;
@@ -31,8 +34,6 @@ public class PrzyciskiGry implements ActionListener {
         this.surrender = surrender;
         this.wyswietlanieKarty = wyswietlanieKarty;
         this.oknogry = oknogry;
-
-        System.out.println(this.gra.postawione);
 
         hit.addActionListener(this);
         stand.addActionListener(this);
@@ -57,8 +58,8 @@ public class PrzyciskiGry implements ActionListener {
         if(wyswietlanieKarty.sciezkiKart.size() < 11) {
             if(!czyDD) {
                 String sciezkaDodana;
-                sciezkaDodana = gra.dodanieDoTalii();
-                System.out.println(gra.iloscPkt);
+                sciezkaDodana = gra.uzyskanieLinka();
+                System.out.println(gra.pktKlienta);
                 wyswietlanieKarty.dodanieKarty(sciezkaDodana);
             }
             else{
@@ -76,12 +77,12 @@ public class PrzyciskiGry implements ActionListener {
     }
 
     private void doubledown() {
-        if(gra.srodki - 2 * gra.postawione > 0){
+        if(this.srodki - 2 * this.postawione > 0){
             if(!czyDD) {
-                gra.postawione *= 2;
+                this.postawione *= 2;
                 String sciezkaDodana;
-                sciezkaDodana = gra.dodanieDoTalii();
-                System.out.println(gra.iloscPkt);
+                sciezkaDodana = gra.uzyskanieLinka();
+                System.out.println(this.postawione);
                 wyswietlanieKarty.dodanieKarty(sciezkaDodana);
                 czyDD = true;
             }
@@ -96,7 +97,6 @@ public class PrzyciskiGry implements ActionListener {
 
 
     private void surrender() {
-
         gra.srodki -= gra.postawione;
         JOptionPane.showMessageDialog(oknogry, "Dlaczego?", "Dlaczego?", JOptionPane.QUESTION_MESSAGE);
         oknogry.dispose();

@@ -122,7 +122,7 @@ public class UzyskanieGrafiki  {
                         return "/karty/dwaTrefl.png";
                 }
             default:
-                return "wystapil blad";
+                return "/karty/tylKarty.png";
         }
 
     }

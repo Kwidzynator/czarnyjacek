@@ -19,4 +19,13 @@ public enum Kolory{
     public String printKolory(){
         return this.tekstKolory;
     }
+
+    public static Kolory fromString(String text) {
+        for (Kolory kolory : Kolory.values()) {
+            if (kolory.tekstKolory.equalsIgnoreCase(text)) {
+                return kolory;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in Kolory enum");
+    }
 }
