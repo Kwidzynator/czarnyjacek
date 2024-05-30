@@ -1,9 +1,6 @@
 package GUI;
 
-import org.gra.Gra;
-import org.gra.Karty;
-import org.gra.Kolory;
-import org.gra.Wartosci;
+import org.gra.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -34,18 +31,19 @@ public class OknoGry{
     protected JPanel panelKart;
     private WyswietlanieKarty wyswietlanieKarty;
 
+    private Talia talia;
     private Socket socket;
-    private BufferedReader br;
-    private BufferedWriter bw;
-
+    private final BufferedReader br;
     private final Gra gra = new Gra();
+
+    private PrzyciskiGry przyciskiGry;
 
     public OknoGry(int postawione, int srodki, Socket socket) throws IOException {
         this.postawione = postawione;
         this.srodki = srodki;
         this.socket = socket;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
     }
 
     /**
@@ -63,11 +61,14 @@ public class OknoGry{
         UtworzenieOkna utworzenieOkna = new UtworzenieOkna();
         JFrame oknogry = utworzenieOkna.okno();
 
+        przyciskiGry = new PrzyciskiGry(hit, stand, doubleDown, surrender, gra,
+                wyswietlanieKarty, oknogry, postawione, srodki, socket);
+
+        kartyStartowe();
         kartyStartoweSerwera();
 
         przyciski();
-        PrzyciskiGry przyciskiGry = new PrzyciskiGry(hit, stand, doubleDown, surrender, gra,
-                wyswietlanieKarty, oknogry, postawione, srodki);
+
 
         ustawieniePrzyciskow();
 
@@ -102,26 +103,30 @@ public class OknoGry{
         String przeslane = br.readLine();
         JSONArray jsonArray = new JSONArray(przeslane);
         wyswietlanieKarty = new WyswietlanieKarty();
-
+        String link1 = null;
+        String link2 = null;
         for(int i = 0; i < jsonArray.length(); i++){
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             //ma to na celu aby nasza pierwsza otrzymana karta była zasłonięta, losuje dwie karty więc no
-            String link;
+
             if(i != 0) {
-                link = jsonObject.getString("link");
+                link2 = jsonObject.getString("link");
+                //System.out.println(link2);
             }
             else{
-                link = "";
+                link1 = "/karty/tylKarty.png";
+                //System.out.println(link1);
             }
-            System.out.println(link);
+
             String nazwa = jsonObject.getString("nazwa");
             String kolor = jsonObject.getString("kolor");
             int wartosc = jsonObject.getInt("wartosc");
 
 
-            System.out.println(nazwa);
-            System.out.println(kolor);
-            System.out.println(wartosc);
+            //System.out.println(nazwa);
+            //System.out.println(kolor);
+            //System.out.println(wartosc);
+            gra.pktSerwera += wartosc;
             //dodajemy kartę do talii aby się nie powatarzała
             Kolory kartaKolor = Kolory.fromString(kolor);
             Wartosci kartaWartosc = Wartosci.fromString(nazwa);
@@ -130,17 +135,39 @@ public class OknoGry{
 
 
         }
-        kartyStartowe();
+        System.out.println("pkt serwera: " + gra.getPktSerwera());
+        wyswietlanieKarty = new WyswietlanieKarty();
+        JPanel panelSerwera = wyswietlanieKarty.startGry(link1, link2, 1);
 
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor |= GridBagConstraints.NORTH;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        calosc.add(panelSerwera, gbc);
     }
 
-    private void kartyStartowe(){
+    private void kartyStartowe() throws IOException {
         String sciezkaKarty1, sciezkakarty2;
         sciezkaKarty1 = gra.uzyskanieLinka();
         sciezkakarty2 = gra.uzyskanieLinka();
-        System.out.println(gra.getPktKlienta());
+
+        talia = gra.getTaliaUzytych();
+        Karty karta = talia.get(0);
+        gra.pktKlienta += karta.uzyskajWartosc();
+        przyciskiGry.wyslanieKarty(karta);
+
+        karta = talia.get(1);
+        gra.pktKlienta += karta.uzyskajWartosc();
+        System.out.println("pkt klienta: " + gra.getPktKlienta());
+        przyciskiGry.wyslanieKarty(karta);
+
+
         wyswietlanieKarty = new WyswietlanieKarty();
-        panelKart = wyswietlanieKarty.startGry(sciezkaKarty1, sciezkakarty2);
+        panelKart = wyswietlanieKarty.startGry(sciezkaKarty1, sciezkakarty2, 0);
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.anchor |= GridBagConstraints.SOUTH;

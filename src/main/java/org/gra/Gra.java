@@ -9,8 +9,7 @@ import java.util.Random;
 
 public class Gra {
 
-    public int postawione = 0;
-    public int srodki = 5000;
+
     private Talia taliaUzytych = new Talia();
     /**
      * warto również zaznaczyć iż ze względu na wartość punktową środki i postawione
@@ -30,7 +29,6 @@ public class Gra {
         Kolory kartaKolor = Kolory.values()[kolor - 1];
         Wartosci kartaWartosc = Wartosci.values()[wartosc - 1];
         karta = new Karty(kartaKolor, kartaWartosc);
-        pktKlienta += karta.uzyskajWartosc();
         return karta;
     }
     public String uzyskanieLinka(){
@@ -54,11 +52,16 @@ public class Gra {
         return taliaUzytych;
     }
 
+    public void oczysczenie(){
+        taliaUzytych.wyczyszczenie();
+        pktKlienta = 0;
+        pktSerwera = 0;
+    }
+
     public Gra(){
     }
 
-
-
-
-
+    public int getPktSerwera() {
+        return pktSerwera;
+    }
 }

@@ -39,7 +39,9 @@ public class PrzyciskPolaczenia implements ActionListener {
                     jTextFieldPORT.setText("port");
                 }
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                JOptionPane.showMessageDialog(frame, "wystapil problem polaczenia", "Bład", JOptionPane.ERROR_MESSAGE);
+                jTextFieldIP.setText("adres");
+                jTextFieldPORT.setText("port");
             }
         }
     }

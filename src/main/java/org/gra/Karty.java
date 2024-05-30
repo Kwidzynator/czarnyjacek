@@ -29,7 +29,7 @@ public class Karty {
 
     /** poniższa część kodu odpowiada za właściwe przyrównania czy karty są sobie równe
      * zwyczajne porównanie equals nie zadziała gdyż Java korzysta z porównań referencji
-     * a nie wartości przez co musimy każdej karcie przypisać wartość hasz
+     * a nie wartości przez co musimy każdej karcie przypisać wartość hasz, ai
      * */
     @Override
     public boolean equals(Object o) {

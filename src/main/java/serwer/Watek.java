@@ -14,6 +14,7 @@ public class Watek extends Thread {
     private Socket socket;
     private Karty kartatmp;
     private Gra gra = new Gra();
+    private boolean czyStand = false;
     private JSONArray jsonA;
     private Talia talia;
     public Watek(Socket socket) {
@@ -59,36 +60,96 @@ public class Watek extends Thread {
         bw.flush();
 
         //nie chcemy aby ta funkcja była za długa to przechodzimy do reszty gry
-        resztaGry();
+        otrzymanie2Kart();
     }
 
-    private void resztaGry() throws IOException {
-        while(true){
+    private void otrzymanie2Kart() throws IOException {
 
-            String otrzymana = br.readLine();
+            //wyczekujemy tutaj na otrzymanie dwóch pierwszych kart
+            String przeslane = br.readLine();
+            String przeslane2 = br.readLine();
+            JSONArray jsonArray = new JSONArray(przeslane + przeslane2);
 
-            jsonA = new JSONArray(otrzymana);
-            String nazwa = jsonA.getString(0);
-            String kolor = jsonA.getString(1);
-            int wartosc = jsonA.getInt(2);
+            // tutaj analogicznie jak na początku gry klienta, przyjmujemy dwie karty aby wiedzieć czego NIE dobierać
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-            gra.pktKlienta += wartosc;
-            Kolory kartaKolor = Kolory.valueOf(kolor);
-            Wartosci kartaWartosc = Wartosci.valueOf(nazwa);
-            kartatmp = new Karty(kartaKolor, kartaWartosc);
-            gra.dodanie(kartatmp);
+                String nazwa = jsonObject.getString("nazwa");
+                String kolor = jsonObject.getString("kolor");
+                int wartosc = jsonObject.getInt("wartosc");
 
-            nazwa = jsonA.getString(3);
-            kolor = jsonA.getString(4);
-            wartosc = jsonA.getInt(5);
-            gra.pktKlienta += wartosc;
-            kartaKolor = Kolory.valueOf(kolor);
-            kartaWartosc = Wartosci.valueOf(nazwa);
-            kartatmp = new Karty(kartaKolor, kartaWartosc);
-            gra.dodanie(kartatmp);
+
+                System.out.println(nazwa);
+                System.out.println(kolor);
+                System.out.println(wartosc);
+                gra.pktKlienta += wartosc;
+                //dodajemy kartę do talii aby się nie powatarzała
+                Kolory kartaKolor = Kolory.fromString(kolor);
+                Wartosci kartaWartosc = Wartosci.fromString(nazwa);
+                Karty karta = new Karty(kartaKolor, kartaWartosc);
+                gra.dodanie(karta);
+
+
+            }
+            System.out.println(gra.getPktKlienta());
 
             miniAI();
 
+
+    }
+    private void miniAI() throws IOException {
+        if(gra.pktSerwera < 17){
+            String link = gra.uzyskanieLinka();
+            kartatmp = talia.get(talia.size() - 1);
+            gra.dodanie(kartatmp);
+            jsonA = new JSONArray();
+            dodanieKartyDOJSONA(link, kartatmp);
+            bw.write(jsonA.toString());
+        }
+        else{
+            czyStand = true;
+            bw.write("stand");
+        }
+        bw.newLine();
+        bw.flush();
+        odbieranie();
+    }
+
+    private void odbieranie() throws IOException {
+        while(true){
+            String wiadomosc = br.readLine();
+            if(wiadomosc.equals("surrender")){
+                br.close();
+                bw.close();
+                socket.close();
+                System.out.println("koncze dzialanie watku");
+                interrupt();
+                break;
+            }
+            //serwera nie interesuje kto wygrał gdyż to i tak jest tylko gra na pkt
+            if(wiadomosc.equals("stand") && czyStand){
+                System.out.println("stand");
+                gra.oczysczenie();
+            }
+            if(wiadomosc.equals("hit") || wiadomosc.equals("dd")){
+                System.out.println("hit/dd");
+                wiadomosc = br.readLine();
+
+                JSONArray jsonArray = new JSONArray(wiadomosc);
+                JSONObject jsonObject = new JSONObject(jsonArray);
+                String nazwa = jsonObject.getString("nazwa");
+                String kolor = jsonObject.getString("kolor");
+                int wartosc = jsonObject.getInt("wartosc");
+                gra.pktKlienta += wartosc;
+
+                Kolory kartaKolor = Kolory.fromString(kolor);
+                Wartosci kartaWartosc = Wartosci.fromString(nazwa);
+                Karty karta = new Karty(kartaKolor, kartaWartosc);
+                gra.dodanie(karta);
+            }
+            if(!czyStand){
+                miniAI();
+            }
         }
     }
     private void dodanieKartyDOJSONA(String linkkarta, Karty karta){
@@ -101,11 +162,6 @@ public class Watek extends Thread {
         jsonA.put(card);
         gra.pktSerwera += karta.uzyskajWartosc();
     }
-    private void miniAI(){
-        if(gra.pktSerwera < 17){
-            kartatmp = gra.losowanie();
-            gra.dodanie(kartatmp);
-            jsonA = new JSONArray();
-        }
-    }
+
+
 }

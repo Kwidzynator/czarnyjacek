@@ -27,12 +27,18 @@ public class WyswietlanieKarty{
         panelKarty.setPreferredSize(new Dimension(470, 360));
         panelKarty.setOpaque(false);
 
-        panelSrodek.add(panelKarty, BorderLayout.SOUTH);
+
         panelSrodek.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
     }
-    public JPanel startGry(String s1, String s2) {
+    // 0 == dół, 1 == góra
+    public JPanel startGry(String s1, String s2, int goraCzyDol) {
         nowePole();
-
+        if(goraCzyDol == 0){
+            panelSrodek.add(panelKarty, BorderLayout.SOUTH);
+        }
+        else{
+            panelSrodek.add(panelKarty, BorderLayout.NORTH);
+        }
         dodanieKarty(s1);
         dodanieKarty(s2);
 

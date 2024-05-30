@@ -30,13 +30,8 @@ public class Talia implements Iterable<Karty>{
         return str;
     }
 
-    public boolean oddaj(Karty karta, Talia talia){
-        if(!kartyList.contains(karta)){
-            return false;
-        }
-        kartyList.remove(karta);
-        talia.dodaj(karta);
-        return true;
+    public int size(){
+        return kartyList.size();
     }
 
     public Karty get(int index) {
