@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class Gui {
 
@@ -34,24 +35,29 @@ public class Gui {
         this.frame.setContentPane(menu);
         this.menu.setLayout(new BoxLayout(this.menu, BoxLayout.PAGE_AXIS));
 
-        przyciski();
+        oknoLogowania(() -> {
+            przyciski();
+            tlo();
+            ikona();
+            this.frame.setVisible(true);
+        });
 
-        tlo();
+    }
 
-        ikona();
-
-        this.frame.setVisible(true);
+    private void oknoLogowania(Runnable callback){
+        OknoLogowaniaRejestracji olr = new OknoLogowaniaRejestracji();
+        olr.lr(callback);
     }
 
     /**funkcja odpowiedzialna za przydzielenie ikonki*/
-    protected void ikona(){
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/Obrazki/catgambling.png"));
+    private void ikona(){
+        ImageIcon imageIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/Obrazki/catgambling.png")));
         this.frame.setIconImage(imageIcon.getImage());
     }
 
     /**funkcja ustawiająca tło*/
-    protected void tlo(){
-        ImageIcon kot = new ImageIcon(getClass().getResource("/Obrazki/catjamgamblin.png"));
+    private void tlo(){
+        ImageIcon kot = new ImageIcon(Objects.requireNonNull(getClass().getResource("/Obrazki/catjamgamblin.png")));
         JLabel tloLabel = new JLabel(kot);
         this.menuTlo.setLayout(new BoxLayout(menuTlo, BoxLayout.LINE_AXIS));
         this.menuTlo.add(tloLabel);
@@ -60,7 +66,7 @@ public class Gui {
     }
 
     /**funkcja ustawiająca przyciski, planowane rozbicie na 3: instrukcja, logowanie(to na potem), rozpoczęcie gry*/
-    protected void przyciski(){
+    private void przyciski(){
         this.menuPrzyciski.setLayout(new BoxLayout(menuPrzyciski, BoxLayout.LINE_AXIS));
         this.menuPrzyciski.setPreferredSize(new Dimension(200, 200));
         this.menuPrzyciski.setBackground(new Color(0x333A3A));

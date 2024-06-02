@@ -117,7 +117,7 @@ public class PrzyciskiGry implements ActionListener {
 
 
     private void doubledown() throws IOException {
-        if(this.srodki - 2 * this.postawione > 0){
+        if(this.srodki - 2 * this.postawione >= 0){
             if(!czyDD) {
                 bw.write("dd");
                 bw.newLine();
